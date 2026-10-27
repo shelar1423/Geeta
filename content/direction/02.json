@@ -7,9 +7,22 @@
  "6": "anguish",
  "7": "anguish",
  "8": "anguish",
- "9": "grave",
+ "9": [
+  {
+   "speaker": "sanjaya",
+   "mood": "grave"
+  },
+  {
+   "speaker": "arjuna",
+   "mood": "anguish"
+  },
+  {
+   "speaker": "sanjaya",
+   "mood": "tender"
+  }
+ ],
  "10": "tender",
- "11": "calm",
+ "11": "tender",
  "12": "calm",
  "13": "calm",
  "14": "calm",

@@ -77,18 +77,24 @@ export const CAST: Record<Lang, Record<VoiceRole, Voice>> = {
       model: "bulbul:v4-flash",
       speaker: "shubh_hi_stories_dramatic",
       pace: 1,
-      moodSpeakers: { calm: "shubh_hi_devotional", awe: "shubh_hi_devotional" },
+      moodSpeakers: { calm: "shubh_hi_devotional", awe: "shubh_hi_devotional", tender: "shubh_hi_devotional" },
     },
     sanjaya: {
       model: "bulbul:v4-flash",
       speaker: "ratan_hi_documentary",
       pace: 1,
-      moodSpeakers: { awe: "ratan_hi_devotional", tender: "ratan_hi_devotional" },
+      moodSpeakers: { awe: "ratan_hi_devotional", tender: "ratan_hi_latenight_warm" },
     },
     dhritarashtra: { model: "bulbul:v4-flash", speaker: "ashok_hi_character", pace: 0.9, pitch: -0.15 },
-    duryodhana: { model: "bulbul:v4-flash", speaker: "mukul_hi_suspense", pace: 1.02 },
+    duryodhana: {
+      model: "bulbul:v4-flash",
+      speaker: "mukul_hi_suspense",
+      pace: 1.02,
+      // His boasting about his army gets the brighter, showier style.
+      moodSpeakers: { triumphant: "mukul_hi_ads" },
+    },
     guide: { model: "bulbul:v4-flash", speaker: "roopa_hi_narration", pace: 0.97 },
-    reciter: { model: "bulbul:v4-flash", speaker: "nachiket_hi_devotional", pace: 0.85 },
+    reciter: { model: "bulbul:v4-flash", speaker: "nachiket_hi_devotional", pace: 0.8 },
   },
   en: {
     krishna: { model: "bulbul:v4-flash", speaker: "girish_en_devotional", pace: 0.92, pitch: -0.05 },
@@ -102,7 +108,7 @@ export const CAST: Record<Lang, Record<VoiceRole, Voice>> = {
     dhritarashtra: { model: "bulbul:v4-flash", speaker: "varun_en_suspense", pace: 0.9, pitch: -0.1 },
     duryodhana: { model: "bulbul:v4-flash", speaker: "rustom_en_suspense", pace: 1.02 },
     guide: { model: "bulbul:v4-flash", speaker: "simran_en_narration", pace: 0.97 },
-    reciter: { model: "bulbul:v4-flash", speaker: "nachiket_hi_devotional", pace: 0.85 },
+    reciter: { model: "bulbul:v4-flash", speaker: "nachiket_hi_devotional", pace: 0.8 },
   },
   mr: {
     krishna: { model: "bulbul:v4-flash", speaker: "soham_mr_narration", pace: 0.92, pitch: -0.1 },
@@ -113,7 +119,7 @@ export const CAST: Record<Lang, Record<VoiceRole, Voice>> = {
     dhritarashtra: { model: "bulbul:v3", speaker: "varun", pace: 0.9 },
     duryodhana: { model: "bulbul:v3", speaker: "kabir", pace: 1.02 },
     guide: { model: "bulbul:v4-flash", speaker: "rupali_mr_stories", pace: 0.97 },
-    reciter: { model: "bulbul:v4-flash", speaker: "nachiket_hi_devotional", pace: 0.85 },
+    reciter: { model: "bulbul:v4-flash", speaker: "nachiket_hi_devotional", pace: 0.8 },
   },
 };
 
@@ -143,14 +149,19 @@ export const AUDITION: Record<Lang, Partial<Record<VoiceRole, string[]>>> = {
   },
 };
 
-const MOOD_ADJUST: Record<Mood, { pace: number; pitch: number }> = {
-  calm: { pace: 0, pitch: 0 },
-  grave: { pace: -0.06, pitch: -0.05 },
-  anguish: { pace: -0.08, pitch: 0.03 },
-  awe: { pace: -0.05, pitch: 0.02 },
-  urgent: { pace: 0.08, pitch: 0.04 },
-  tender: { pace: -0.05, pitch: 0 },
-  triumphant: { pace: 0.04, pitch: 0.05 },
+/**
+ * How each mood shifts delivery. Pace and pitch are relative to the cast
+ * voice; loudness (v4 Flash) and temperature (expressiveness) are absolute.
+ * Kept small: large shifts make a voice stop sounding like itself.
+ */
+const MOOD_DELIVERY: Record<Mood, { pace: number; pitch: number; loudness: number; temperature: number }> = {
+  calm: { pace: 0, pitch: 0, loudness: 1, temperature: 0.6 },
+  grave: { pace: -0.07, pitch: -0.06, loudness: 0.95, temperature: 0.6 },
+  anguish: { pace: -0.1, pitch: 0.03, loudness: 0.9, temperature: 0.8 },
+  awe: { pace: -0.08, pitch: 0.02, loudness: 0.95, temperature: 0.7 },
+  urgent: { pace: 0.08, pitch: 0.05, loudness: 1.12, temperature: 0.75 },
+  tender: { pace: -0.07, pitch: -0.02, loudness: 0.85, temperature: 0.7 },
+  triumphant: { pace: 0.05, pitch: 0.06, loudness: 1.18, temperature: 0.8 },
 };
 
 export const LANGUAGE_CODES: Record<Lang, string> = { hi: "hi-IN", en: "en-IN", mr: "mr-IN" };
@@ -161,6 +172,8 @@ export interface VoiceRequest {
   language_code: string;
   pace: number;
   pitch?: number;
+  loudness?: number;
+  temperature?: number;
 }
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, Math.round(n * 100) / 100));
@@ -168,16 +181,20 @@ const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, M
 /** The exact Sarvam parameters for a role speaking in a mood. */
 export function voiceFor(lang: Lang, role: VoiceRole, mood: Mood = "calm"): VoiceRequest {
   const voice = CAST[lang][role];
-  const adjust = MOOD_ADJUST[mood];
+  const delivery = MOOD_DELIVERY[mood];
   const request: VoiceRequest = {
     model: voice.model,
     speaker: voice.moodSpeakers?.[mood] ?? voice.speaker,
     // The reciter always reads Devanagari Sanskrit, closest to Hindi.
     language_code: role === "reciter" ? "hi-IN" : LANGUAGE_CODES[lang],
-    pace: clamp(voice.pace + adjust.pace, 0.5, 2),
+    pace: clamp(voice.pace + delivery.pace, 0.5, 2),
+    temperature: delivery.temperature,
   };
-  // Pitch is only accepted by v4 Flash.
-  if (voice.model === "bulbul:v4-flash") request.pitch = clamp((voice.pitch ?? 0) + adjust.pitch, -0.5, 0.5);
+  // Pitch and loudness are only accepted by v4 Flash.
+  if (voice.model === "bulbul:v4-flash") {
+    request.pitch = clamp((voice.pitch ?? 0) + delivery.pitch, -0.5, 0.5);
+    request.loudness = clamp(delivery.loudness, 0.1, 2.5);
+  }
   return request;
 }
 

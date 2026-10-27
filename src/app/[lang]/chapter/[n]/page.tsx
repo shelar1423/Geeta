@@ -19,8 +19,8 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/chapter/[n
   return chapter ? { title: `${chapter.title[lang]} · ${t(lang, "appName")}` } : {};
 }
 
-/** The client only needs to know who speaks and where the audio is. */
-const slim = ({ id, role, src }: Clip) => ({ id, role, src });
+/** The client needs who speaks, how, and where the audio is; not the text again. */
+const slim = ({ id, layer, role, mood, src }: Clip) => ({ id, layer, role, mood, src });
 
 export default async function ChapterPage({ params }: PageProps<"/[lang]/chapter/[n]">) {
   const { lang: rawLang, n } = await params;

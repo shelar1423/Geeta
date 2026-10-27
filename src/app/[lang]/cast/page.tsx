@@ -1,10 +1,11 @@
 import { Audition } from "@/components/Audition";
 import { Avatar } from "@/components/Avatar";
 import { Header } from "@/components/Header";
-import { auditionLine } from "@/lib/audition";
+import { auditionClip } from "@/lib/audition";
 import { AUDITION, CAST, CHARACTERS } from "@/lib/casting";
 import { t } from "@/lib/i18n";
 import { parseLang } from "@/lib/params";
+import { toDisplay } from "@/lib/script";
 import type { VoiceRole } from "@/lib/types";
 
 const ROLES: VoiceRole[] = ["krishna", "arjuna", "sanjaya", "dhritarashtra", "duryodhana", "guide", "reciter"];
@@ -40,7 +41,7 @@ export default async function CastPage({ params }: PageProps<"/[lang]/cast">) {
                   lang={role === "reciter" ? "sa" : lang}
                   className={`border-l-2 border-line pl-3 text-muted italic ${role === "reciter" ? "font-shloka not-italic" : ""}`}
                 >
-                  {auditionLine(lang, role)}
+                  {toDisplay(auditionClip(lang, role).text)}
                 </blockquote>
                 <Audition lang={lang} role={role} speakers={speakers} current={cast.speaker} currentLabel={t(lang, "current")} />
                 {role === "reciter" && <p className="text-xs text-muted">{t(lang, "experimentalSanskrit")}</p>}

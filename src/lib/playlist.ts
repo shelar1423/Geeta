@@ -4,6 +4,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { voiceFor } from "./casting";
 import { getDirection, getTranslation, normalizeCue, versesOf } from "./content";
+import { toDisplay, toSpeech } from "./script";
 import type { CharacterId, Clip, Lang, Layer, Mood, Segment, VoiceRole } from "./types";
 
 export interface VerseItem {
@@ -41,6 +42,7 @@ function makeClip(
   text: string,
   mood?: Mood,
 ): Clip {
+  text = toSpeech(text);
   const id = clipId(lang, role, text, mood);
   // Pre-generated audio is served statically; anything else is synthesised
   // on first request and cached by the CDN (the id pins the content).
@@ -69,21 +71,20 @@ export function buildPlaylist(lang: Lang, chapter: number): ChapterPlaylist {
       return { speaker: cue.speaker ?? v.speaker, text, ...(cue.mood ? { mood: cue.mood } : {}) };
     });
     const note = translation?.notes?.[n];
+    const clips = {
+      sanskrit: makeClip(lang, chapter, `v${n}.s`, "sanskrit", "reciter", v.sanskrit.join("\n")),
+      translation: segments.map((s, i) => makeClip(lang, chapter, `v${n}.t${i}`, "translation", s.speaker, s.text, s.mood)),
+      ...(note ? { note: makeClip(lang, chapter, `v${n}.n`, "note", "guide", note) } : {}),
+    };
 
     return {
       verse: v.verse,
       speaker: v.speaker,
       sanskrit: v.sanskrit,
       transliteration: v.transliteration,
-      segments,
-      ...(note ? { note } : {}),
-      clips: {
-        sanskrit: makeClip(lang, chapter, `v${n}.s`, "sanskrit", "reciter", v.sanskrit.join("\n")),
-        translation: segments.map((s, i) =>
-          makeClip(lang, chapter, `v${n}.t${i}`, "translation", s.speaker, s.text, s.mood),
-        ),
-        ...(note ? { note: makeClip(lang, chapter, `v${n}.n`, "note", "guide", note) } : {}),
-      },
+      segments: segments.map((s) => ({ ...s, text: toDisplay(s.text) })),
+      ...(note ? { note: toDisplay(note) } : {}),
+      clips,
     };
   });
 
@@ -92,7 +93,12 @@ export function buildPlaylist(lang: Lang, chapter: number): ChapterPlaylist {
     chapter,
     translated: translation !== null,
     ...(translation?.intro
-      ? { intro: { text: translation.intro, clip: makeClip(lang, chapter, "intro", "note", "guide", translation.intro) } }
+      ? {
+          intro: {
+            text: toDisplay(translation.intro),
+            clip: makeClip(lang, chapter, "intro", "note", "guide", translation.intro),
+          },
+        }
       : {}),
     verses,
   };

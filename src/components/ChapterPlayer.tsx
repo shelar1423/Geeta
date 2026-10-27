@@ -4,11 +4,14 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { Avatar } from "./Avatar";
 import { CHARACTERS } from "@/lib/casting";
 import type { StringKey } from "@/lib/i18n";
-import type { CharacterId, Lang, VoiceRole } from "@/lib/types";
+import { gapBetween } from "@/lib/timing";
+import type { CharacterId, Layer, Lang, Mood, VoiceRole } from "@/lib/types";
 
 export interface PlayerClip {
   id: string;
+  layer: Layer;
   role: VoiceRole;
+  mood?: Mood;
   src: string;
 }
 
@@ -156,6 +159,19 @@ export function ChapterPlayer({
     });
   }, [after, settings.repeat]);
 
+  // When a clip ends, hold a silence that fits the moment, then move on.
+  const gapTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const onEnded = () => {
+    const next = after(cursor, settings.repeat);
+    const nextClip = next && partsOf(next.verse)[next.part];
+    const gap = current && nextClip ? gapBetween(current, nextClip, next.verse === cursor.verse) : 0;
+    gapTimer.current = setTimeout(advance, gap / settings.rate);
+  };
+  useEffect(() => {
+    if (!playing) clearTimeout(gapTimer.current);
+  }, [playing]);
+  useEffect(() => () => clearTimeout(gapTimer.current), []);
+
   // Play the current clip, and warm up the next two.
   useEffect(() => {
     const audio = audioRef.current;
@@ -210,13 +226,17 @@ export function ChapterPlayer({
     if (on) setStarted(true);
   };
   const playFrom = (verse: number) => {
+    clearTimeout(gapTimer.current);
     setCursor({ verse, part: 0 });
     play(true);
   };
   const stepVerse = (delta: number) => {
     let v = cursor.verse + delta;
     while (v >= 0 && v < verses.length && !partsOf(v).length) v += delta;
-    if (v >= (intro ? INTRO : 0) && v < verses.length) setCursor({ verse: v, part: 0 });
+    if (v >= (intro ? INTRO : 0) && v < verses.length) {
+      clearTimeout(gapTimer.current);
+      setCursor({ verse: v, part: 0 });
+    }
   };
 
   const speaker: VoiceRole = current?.role ?? (cursor.verse === INTRO ? "guide" : verses[cursor.verse].speaker);
@@ -327,7 +347,7 @@ export function ChapterPlayer({
         })}
       </ol>
 
-      <audio ref={audioRef} onEnded={advance} />
+      <audio ref={audioRef} onEnded={onEnded} />
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-card/95 backdrop-blur">
         {message && <p className="mx-auto max-w-3xl px-4 pt-2 text-sm text-accent">{message}</p>}

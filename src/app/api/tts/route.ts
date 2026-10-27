@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { AUDITION, CAST, voiceFor } from "@/lib/casting";
 import { getChapter } from "@/lib/content";
-import { auditionLine } from "@/lib/audition";
+import { auditionClip } from "@/lib/audition";
 import { buildPlaylist, clipIndex } from "@/lib/playlist";
 import { MissingApiKeyError, synthesize } from "@/lib/sarvam";
 import { LANGUAGES, type Lang, type VoiceRole } from "@/lib/types";
@@ -26,9 +26,11 @@ export async function GET(request: NextRequest) {
     const speaker = params.get("speaker") ?? CAST[lang][role]?.speaker;
     const allowed = [CAST[lang][role]?.speaker, ...(AUDITION[lang][role] ?? [])];
     if (!speaker || !allowed.includes(speaker)) return new Response("Unknown voice", { status: 400 });
-    text = auditionLine(lang, role);
+    const clip = auditionClip(lang, role);
+    text = clip.text;
+    const cast = voiceFor(lang, role, clip.mood);
     // Audition alternatives are all v4 Flash personas.
-    voice = speaker === CAST[lang][role].speaker ? voiceFor(lang, role) : { ...voiceFor(lang, role), model: "bulbul:v4-flash" as const, speaker };
+    voice = speaker === CAST[lang][role].speaker ? cast : { ...cast, model: "bulbul:v4-flash" as const, speaker };
   } else {
     const chapter = Number(params.get("ch"));
     const clip = getChapter(chapter) && clipIndex(buildPlaylist(lang, chapter)).get(params.get("key") ?? "");
