@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #faf6ef;
+  --card: #fffdf9;
+  --ink: #2a2118;
+  --muted: #7a6a58;
+  --line: #eadfcd;
+  --accent: #d9711c;
+  --accent-ink: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14110d;
+    --card: #1d1914;
+    --ink: #efe6d8;
+    --muted: #a8977f;
+    --line: #332b22;
+    --accent: #f0954a;
+    --accent-ink: #1a120a;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --font-shloka: var(--font-shloka);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* The verse being spoken. --speaker is set per verse to the speaker's colour. */
+.verse-active {
+  border-color: var(--speaker);
+  box-shadow: 0 0 0 1px var(--speaker), 0 12px 32px -16px var(--speaker);
+}
+
+@keyframes speaking {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+.speaking-bar {
+  animation: speaking 0.9s ease-in-out infinite;
+  transform-origin: bottom;
+}

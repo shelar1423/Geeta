@@ -1,0 +1,200 @@
+[
+ {
+  "number": 1,
+  "sanskritName": "अर्जुनविषादयोग",
+  "iast": "Arjuna Viṣāda Yoga",
+  "title": {
+   "en": "Arjuna's Despair",
+   "hi": "अर्जुन का विषाद",
+   "mr": "अर्जुनाचा विषाद"
+  },
+  "verseCount": 47
+ },
+ {
+  "number": 2,
+  "sanskritName": "साङ्ख्ययोग",
+  "iast": "Sāṅkhya Yoga",
+  "title": {
+   "en": "The Path of Knowledge",
+   "hi": "सांख्य योग — ज्ञान का मार्ग",
+   "mr": "सांख्ययोग — ज्ञानाचा मार्ग"
+  },
+  "verseCount": 72
+ },
+ {
+  "number": 3,
+  "sanskritName": "कर्मयोग",
+  "iast": "Karma Yoga",
+  "title": {
+   "en": "The Path of Action",
+   "hi": "कर्मयोग — कर्म का मार्ग",
+   "mr": "कर्मयोग — कर्माचा मार्ग"
+  },
+  "verseCount": 43
+ },
+ {
+  "number": 4,
+  "sanskritName": "ज्ञानकर्मसंन्यासयोग",
+  "iast": "Jñāna Karma Sannyāsa Yoga",
+  "title": {
+   "en": "Knowledge and Renunciation of Action",
+   "hi": "ज्ञान और कर्म-संन्यास",
+   "mr": "ज्ञान आणि कर्मसंन्यास"
+  },
+  "verseCount": 42
+ },
+ {
+  "number": 5,
+  "sanskritName": "कर्मसंन्यासयोग",
+  "iast": "Karma Sannyāsa Yoga",
+  "title": {
+   "en": "Renunciation of Action",
+   "hi": "कर्म-संन्यास योग",
+   "mr": "कर्मसंन्यास योग"
+  },
+  "verseCount": 29
+ },
+ {
+  "number": 6,
+  "sanskritName": "आत्मसंयमयोग",
+  "iast": "Ātma Saṃyama Yoga",
+  "title": {
+   "en": "The Path of Meditation",
+   "hi": "ध्यान योग",
+   "mr": "ध्यानयोग"
+  },
+  "verseCount": 47
+ },
+ {
+  "number": 7,
+  "sanskritName": "ज्ञानविज्ञानयोग",
+  "iast": "Jñāna Vijñāna Yoga",
+  "title": {
+   "en": "Knowledge and Realisation",
+   "hi": "ज्ञान और विज्ञान",
+   "mr": "ज्ञान आणि विज्ञान"
+  },
+  "verseCount": 30
+ },
+ {
+  "number": 8,
+  "sanskritName": "अक्षरब्रह्मयोग",
+  "iast": "Akṣara Brahma Yoga",
+  "title": {
+   "en": "The Imperishable",
+   "hi": "अक्षर ब्रह्म योग",
+   "mr": "अक्षरब्रह्म योग"
+  },
+  "verseCount": 28
+ },
+ {
+  "number": 9,
+  "sanskritName": "राजविद्याराजगुह्ययोग",
+  "iast": "Rāja Vidyā Rāja Guhya Yoga",
+  "title": {
+   "en": "The Royal Secret",
+   "hi": "राजविद्या, राजगुह्य",
+   "mr": "राजविद्या, राजगुह्य"
+  },
+  "verseCount": 34
+ },
+ {
+  "number": 10,
+  "sanskritName": "विभूतियोग",
+  "iast": "Vibhūti Yoga",
+  "title": {
+   "en": "The Divine Glories",
+   "hi": "विभूति योग — दिव्य वैभव",
+   "mr": "विभूतियोग — दिव्य वैभव"
+  },
+  "verseCount": 42
+ },
+ {
+  "number": 11,
+  "sanskritName": "विश्वरूपदर्शनयोग",
+  "iast": "Viśvarūpa Darśana Yoga",
+  "title": {
+   "en": "The Vision of the Universal Form",
+   "hi": "विश्वरूप दर्शन",
+   "mr": "विश्वरूप दर्शन"
+  },
+  "verseCount": 55
+ },
+ {
+  "number": 12,
+  "sanskritName": "भक्तियोग",
+  "iast": "Bhakti Yoga",
+  "title": {
+   "en": "The Path of Devotion",
+   "hi": "भक्ति योग",
+   "mr": "भक्तियोग"
+  },
+  "verseCount": 20
+ },
+ {
+  "number": 13,
+  "sanskritName": "क्षेत्रक्षेत्रज्ञविभागयोग",
+  "iast": "Kṣetra Kṣetrajña Vibhāga Yoga",
+  "title": {
+   "en": "The Field and its Knower",
+   "hi": "क्षेत्र और क्षेत्रज्ञ",
+   "mr": "क्षेत्र आणि क्षेत्रज्ञ"
+  },
+  "verseCount": 35
+ },
+ {
+  "number": 14,
+  "sanskritName": "गुणत्रयविभागयोग",
+  "iast": "Guṇa Traya Vibhāga Yoga",
+  "title": {
+   "en": "The Three Qualities",
+   "hi": "तीन गुण",
+   "mr": "तीन गुण"
+  },
+  "verseCount": 27
+ },
+ {
+  "number": 15,
+  "sanskritName": "पुरुषोत्तमयोग",
+  "iast": "Puruṣottama Yoga",
+  "title": {
+   "en": "The Supreme Person",
+   "hi": "पुरुषोत्तम योग",
+   "mr": "पुरुषोत्तम योग"
+  },
+  "verseCount": 20
+ },
+ {
+  "number": 16,
+  "sanskritName": "दैवासुरसम्पद्विभागयोग",
+  "iast": "Daivāsura Sampad Vibhāga Yoga",
+  "title": {
+   "en": "The Divine and the Demonic",
+   "hi": "दैवी और आसुरी सम्पदा",
+   "mr": "दैवी आणि आसुरी संपत्ती"
+  },
+  "verseCount": 24
+ },
+ {
+  "number": 17,
+  "sanskritName": "श्रद्धात्रयविभागयोग",
+  "iast": "Śraddhā Traya Vibhāga Yoga",
+  "title": {
+   "en": "The Three Kinds of Faith",
+   "hi": "तीन प्रकार की श्रद्धा",
+   "mr": "तीन प्रकारची श्रद्धा"
+  },
+  "verseCount": 28
+ },
+ {
+  "number": 18,
+  "sanskritName": "मोक्षसंन्यासयोग",
+  "iast": "Mokṣa Sannyāsa Yoga",
+  "title": {
+   "en": "Liberation through Renunciation",
+   "hi": "मोक्ष संन्यास योग",
+   "mr": "मोक्षसंन्यास योग"
+  },
+  "verseCount": 78
+ }
+]
