@@ -36,6 +36,8 @@ Audio is made in one of two ways:
    ```
 2. **On demand.** Any clip without a file is synthesised by `/api/tts` on first play. The response is cached as immutable, because the URL contains a hash of the text and voice. The route only voices text that exists in `content/`, so it can't be used to spend credits on arbitrary input.
 
+`npm run audio` trims leading silence (the bulbul:v3 voices start with up to 0.6 s), limits peaks to −2 dBFS (Sarvam's output often overshoots full scale), and re-encodes to 48 kbps mono. That takes Chapters 1–2 from about 90 MB to 36 MB. It retries when rate-limited. If the account runs out of credits, the app tells listeners that part isn't voiced yet instead of skipping ahead.
+
 Clip ids are content hashes of the text and voice settings. If you change a line, a mood or a casting choice, only the affected clips are regenerated.
 Chapters 1–2 in all three languages, including intros and notes, come to about 50k characters, roughly ₹100.
 
@@ -65,13 +67,17 @@ content/
 
 Bulbul has no SSML, so delivery is directed through the text itself:
 
+Measured on Bulbul v4 Flash:
+
 | Write | Effect |
 | --- | --- |
-| `,` | a short pause |
-| `.` / `।` | end of a sentence |
-| `!` | emphasis |
-| `…` | a hesitation; use it sparingly, for breaking voices and suspense |
-| `\|` | a breath, which is a longer, paragraph-length pause. It is spoken as a line break and hidden on screen |
+| `,` | a short pause, about 0.4 s |
+| `.` / `।` | end of a sentence; the pause varies from none to 0.55 s |
+| `!` / `?` | emphasis or a question |
+| `\|` | a breath. It is spoken as a line break, which gives a steady 0.55 s pause, the longest available within a clip. It is hidden on screen |
+| `…` | a hesitation. On its own Bulbul barely pauses (0.26 s in English, less than a comma), so the app adds a line break after it, which gives a steady 0.5 s |
+
+Longer, dramatic silences come from the gaps between clips, which the player times exactly.
 
 ```jsonc
 "29": "my limbs give way… | my mouth is dry. | My body trembles, and my hair stands on end."

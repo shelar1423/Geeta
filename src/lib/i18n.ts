@@ -28,9 +28,9 @@ const STRINGS = {
   introduction: { en: "Introduction", hi: "परिचय", mr: "परिचय" },
   playFromHere: { en: "Play from this verse", hi: "यहाँ से सुनें", mr: "इथून ऐका" },
   audioUnavailable: {
-    en: "Audio isn't available yet. Add a Sarvam API key to generate it.",
-    hi: "ऑडियो अभी उपलब्ध नहीं है। इसे बनाने के लिए Sarvam API key जोड़ें।",
-    mr: "ऑडिओ अजून उपलब्ध नाही. तो तयार करण्यासाठी Sarvam API key जोडा.",
+    en: "This part hasn't been voiced yet. Please try again later.",
+    hi: "यह हिस्सा अभी आवाज़ में तैयार नहीं है। कृपया बाद में फिर कोशिश करें।",
+    mr: "हा भाग अजून आवाजात तयार नाही. कृपया नंतर पुन्हा प्रयत्न करा.",
   },
   audioError: {
     en: "Couldn't play this part. Skipping ahead.",

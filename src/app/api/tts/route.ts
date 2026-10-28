@@ -3,7 +3,7 @@ import { AUDITION, CAST, voiceFor } from "@/lib/casting";
 import { getChapter } from "@/lib/content";
 import { auditionClip } from "@/lib/audition";
 import { buildPlaylist, clipIndex } from "@/lib/playlist";
-import { MissingApiKeyError, synthesize } from "@/lib/sarvam";
+import { AudioUnavailableError, synthesize } from "@/lib/sarvam";
 import { LANGUAGES, type Lang, type VoiceRole } from "@/lib/types";
 
 /**
@@ -49,8 +49,9 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    if (error instanceof MissingApiKeyError) {
-      return new Response("Audio is not available: SARVAM_API_KEY is not configured.", { status: 503 });
+    if (error instanceof AudioUnavailableError) {
+      console.error(error.message);
+      return new Response("Audio is not available right now.", { status: 503 });
     }
     console.error(error);
     return new Response("Speech synthesis failed", { status: 502 });

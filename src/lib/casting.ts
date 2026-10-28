@@ -85,7 +85,7 @@ export const CAST: Record<Lang, Record<VoiceRole, Voice>> = {
       pace: 1,
       moodSpeakers: { awe: "ratan_hi_devotional", tender: "ratan_hi_latenight_warm" },
     },
-    dhritarashtra: { model: "bulbul:v4-flash", speaker: "ashok_hi_character", pace: 0.9, pitch: -0.15 },
+    dhritarashtra: { model: "bulbul:v4-flash", speaker: "mahesh_hi_documentary", pace: 0.9, pitch: -0.1 },
     duryodhana: {
       model: "bulbul:v4-flash",
       speaker: "mukul_hi_suspense",
@@ -129,7 +129,7 @@ export const AUDITION: Record<Lang, Partial<Record<VoiceRole, string[]>>> = {
     krishna: ["girish_hi_devotional", "shubh_hi_devotional", "mani_hi_devotional", "anand_hi_documentary"],
     arjuna: ["shubh_hi_stories_dramatic", "advait_hi_character", "aditya_hi_conversational"],
     sanjaya: ["ratan_hi_documentary", "mahesh_hi_documentary", "anand_hi_documentary"],
-    dhritarashtra: ["ashok_hi_character", "mukul_hi_suspense"],
+    dhritarashtra: ["mahesh_hi_documentary", "ashok_hi_character", "mukul_hi_suspense"],
     duryodhana: ["mukul_hi_suspense", "advait_hi_character", "ashok_hi_character"],
     guide: ["roopa_hi_narration", "simran_hi_narration", "ishita_hi_devotional"],
   },
