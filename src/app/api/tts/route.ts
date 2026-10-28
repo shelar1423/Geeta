@@ -3,18 +3,21 @@ import { AUDITION, CAST, voiceFor } from "@/lib/casting";
 import { getChapter } from "@/lib/content";
 import { auditionClip } from "@/lib/audition";
 import { buildPlaylist, clipIndex } from "@/lib/playlist";
-import { AudioUnavailableError, synthesize } from "@/lib/sarvam";
+import { AudioUnavailableError, liveTtsEnabled, synthesize } from "@/lib/sarvam";
 import { LANGUAGES, type Lang, type VoiceRole } from "@/lib/types";
 
 /**
- * On-demand audio for clips that were not pre-generated. Only text that
- * exists in our content can be synthesised, so the endpoint cannot be used
- * to spend credits on arbitrary input.
+ * On-demand audio for clips that were not pre-generated. Every call spends
+ * Sarvam credits, so it is off unless ENABLE_LIVE_TTS=1; normally all audio
+ * is pre-generated (npm run audio) and served from public/audio. Only text
+ * that exists in our content can be synthesised, so the endpoint cannot be
+ * used to spend credits on arbitrary input.
  *
  *   ?lang=hi&ch=2&key=v47.t0&v=<clip id>     a clip from a chapter
  *   ?lang=hi&role=krishna&speaker=<persona>  an audition sample
  */
 export async function GET(request: NextRequest) {
+  if (!liveTtsEnabled()) return new Response("Audio is not available right now.", { status: 503 });
   const params = request.nextUrl.searchParams;
   const lang = params.get("lang") as Lang;
   if (!LANGUAGES.includes(lang)) return new Response("Unknown language", { status: 400 });

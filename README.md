@@ -18,30 +18,35 @@ Chapters 1–2 are fully voiced. Chapters 3–18 have Sanskrit and transliterati
 
 ```bash
 npm install
-cp .env.example .env.local   # add your SARVAM_API_KEY
 npm run dev
 ```
 
-Without a key the site still works for reading. When you press play it says audio isn't available.
+No API key is needed: the audio for Chapters 1–2 is in the repository.
 
 ## Audio
 
-Audio is made in one of two ways:
+All audio is pre-generated and committed in `public/audio/` (36 MB for Chapters 1–2). The site serves it as static files and costs nothing to run.
 
-1. **Pre-generated** (recommended for production). Clips are written to `public/audio/<id>.mp3` and served as static files.
-   ```bash
-   npm run audio -- --dry-run                # how many characters, roughly how many ₹
-   npm run audio -- --lang hi --chapters 1,2 # generate
-   npm run audio -- --sanskrit               # include the Sanskrit recitation
-   ```
-2. **On demand.** Any clip without a file is synthesised by `/api/tts` on first play. The response is cached as immutable, because the URL contains a hash of the text and voice. The route only voices text that exists in `content/`, so it can't be used to spend credits on arbitrary input.
+### Credits: free only
 
-`npm run audio` trims leading silence (the bulbul:v3 voices start with up to 0.6 s), limits peaks to −2 dBFS (Sarvam's output often overshoots full scale), and re-encodes to 48 kbps mono. That takes Chapters 1–2 from about 90 MB to 36 MB. It retries when rate-limited. If the account runs out of credits, the app tells listeners that part isn't voiced yet instead of skipping ahead.
+Sarvam gives every verified account a one-time ₹100 of free credit that never expires. When it runs out, requests fail ("No credits available") and nothing is charged; you're only billed if you add money on Sarvam's billing page. This project's free credit was used to voice Chapters 1–2. Seven Marathi lines (2.66–2.72) were left unvoiced, and the app tells listeners those aren't ready.
 
-Clip ids are content hashes of the text and voice settings. If you change a line, a mood or a casting choice, only the affected clips are regenerated.
-Chapters 1–2 in all three languages, including intros and notes, come to about 50k characters, roughly ₹100.
+To keep this project free:
+- **The site never generates audio by itself.** `/api/tts` is off unless `ENABLE_LIVE_TTS=1`, so visitors can't spend credits. Without it, missing clips report "not available" and the player stops. The voice auditions on `/<lang>/cast` play only the cast voices' pre-generated lines.
+- **`npm run audio` only reports.** It lists the clips that have no audio and what they would cost. It spends credits only with `--yes`:
+  ```bash
+  npm run audio                                # what's missing, and the cost
+  npm run audio -- --lang mr --chapters 2 --yes # generate (spends credits)
+  ```
+- **Don't change the text, mood or casting of voiced lines casually.** Clip ids are content hashes, so editing a voiced line, its mood or its character's voice makes its audio stale, and new audio costs credits. Run `npm run audio` after any content change: anything it lists has lost its audio.
 
-Audition alternative voices for every role at `/<lang>/cast`.
+### The pipeline
+
+`npm run audio -- --yes` trims leading silence (the bulbul:v3 voices start with up to 0.6 s), limits peaks to −2 dBFS (Sarvam's output often overshoots full scale), and re-encodes to 48 kbps mono, about a third of Sarvam's size. It retries when rate-limited. Chapters 1–2 in all three languages, including intros, explanations and the Sanskrit, came to about 60k characters.
+
+Clip ids are content hashes of the text and voice settings, so a run generates only clips whose text or voice changed.
+
+`/<lang>/cast` plays each role's line in its cast voice. Auditioning alternative voices needs `ENABLE_LIVE_TTS=1` and spends credits.
 
 ## Content
 

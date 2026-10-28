@@ -49,9 +49,9 @@ const STRINGS = {
   },
   audition: { en: "Audition", hi: "सुनकर चुनें", mr: "ऐकून निवडा" },
   auditionHelp: {
-    en: "Hear each character's line in different Sarvam voices. The first one is the current choice.",
-    hi: "हर पात्र की पंक्ति अलग-अलग Sarvam आवाज़ों में सुनें। पहली आवाज़ अभी चुनी हुई है।",
-    mr: "प्रत्येक पात्राची ओळ वेगवेगळ्या Sarvam आवाजांत ऐका. पहिला आवाज सध्या निवडलेला आहे.",
+    en: "Hear each character's line in the voice cast for them.",
+    hi: "हर पात्र की पंक्ति उसके लिए चुनी गई आवाज़ में सुनें।",
+    mr: "प्रत्येक पात्राची ओळ त्याच्यासाठी निवडलेल्या आवाजात ऐका.",
   },
   current: { en: "current", hi: "चुनी हुई", mr: "निवडलेला" },
   free: {

@@ -5,6 +5,7 @@ import { auditionClip } from "@/lib/audition";
 import { AUDITION, CAST, CHARACTERS } from "@/lib/casting";
 import { t } from "@/lib/i18n";
 import { parseLang } from "@/lib/params";
+import { liveTtsEnabled } from "@/lib/sarvam";
 import { toDisplay } from "@/lib/script";
 import type { VoiceRole } from "@/lib/types";
 
@@ -23,7 +24,14 @@ export default async function CastPage({ params }: PageProps<"/[lang]/cast">) {
         <ul className="space-y-4">
           {ROLES.map((role) => {
             const cast = CAST[lang][role];
-            const speakers = [cast.speaker, ...(AUDITION[lang][role] ?? []).filter((s) => s !== cast.speaker)];
+            // The cast voice's sample is a chapter clip, normally pre-generated.
+            // Other voices cost Sarvam credits, so they are offered only with live TTS on.
+            const clip = auditionClip(lang, role);
+            const alternatives = liveTtsEnabled() ? (AUDITION[lang][role] ?? []).filter((s) => s !== cast.speaker) : [];
+            const samples = [
+              { speaker: cast.speaker, src: clip.src },
+              ...alternatives.map((speaker) => ({ speaker, src: `/api/tts?lang=${lang}&role=${role}&speaker=${speaker}` })),
+            ];
             return (
               <li
                 key={role}
@@ -41,9 +49,9 @@ export default async function CastPage({ params }: PageProps<"/[lang]/cast">) {
                   lang={role === "reciter" ? "sa" : lang}
                   className={`border-l-2 border-line pl-3 text-muted italic ${role === "reciter" ? "font-shloka not-italic" : ""}`}
                 >
-                  {toDisplay(auditionClip(lang, role).text)}
+                  {toDisplay(clip.text)}
                 </blockquote>
-                <Audition lang={lang} role={role} speakers={speakers} current={cast.speaker} currentLabel={t(lang, "current")} />
+                <Audition samples={samples} current={cast.speaker} currentLabel={t(lang, "current")} />
                 {role === "reciter" && <p className="text-xs text-muted">{t(lang, "experimentalSanskrit")}</p>}
               </li>
             );

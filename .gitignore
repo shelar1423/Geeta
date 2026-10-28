@@ -40,7 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# pre-generated audio (npm run audio); host on a CDN rather than in git
-/public/audio/
 
 !.env.example

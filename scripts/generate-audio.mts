@@ -1,9 +1,12 @@
 // Pre-generates audio for the chapters we have translations for, so the app
 // can serve it as static files instead of calling Sarvam on demand.
 //
+// Every generated clip spends Sarvam credits (the free ₹100 is one-time),
+// so by default this only reports what is missing and what it would cost.
+//
 // Usage:
-//   npm run audio -- --dry-run                 # count characters and cost
-//   npm run audio -- --lang hi --chapters 1,2  # generate
+//   npm run audio                                    # report only
+//   npm run audio -- --lang hi --chapters 1,2 --yes  # generate (spends credits)
 //
 // Files land in public/audio/<clip id>.mp3. Ids are content hashes, so
 // re-running only generates clips whose text or voice has changed.
@@ -45,7 +48,8 @@ function arg(name: string): string | undefined {
   return i === -1 ? undefined : process.argv[i + 1];
 }
 
-const dryRun = process.argv.includes("--dry-run");
+// Spending needs an explicit --yes; --dry-run is kept for old habits.
+const dryRun = !process.argv.includes("--yes") || process.argv.includes("--dry-run");
 const sanskrit = process.argv.includes("--sanskrit");
 const langs = (arg("lang")?.split(",") ?? LANGUAGES) as Lang[];
 const chapterArg = arg("chapters")?.split(",").map(Number);
@@ -68,7 +72,11 @@ console.log(
   `${unique.length} clips to generate, ${chars.toLocaleString()} characters, ` +
     `about ₹${Math.ceil((chars / 10_000) * RUPEES_PER_10K_CHARS)}`,
 );
-if (dryRun || unique.length === 0) process.exit(0);
+if (unique.length === 0) process.exit(0);
+if (dryRun) {
+  console.log("Nothing generated. Re-run with --yes to spend Sarvam credits on these clips.");
+  process.exit(0);
+}
 
 mkdirSync(AUDIO_DIR, { recursive: true });
 let done = 0;

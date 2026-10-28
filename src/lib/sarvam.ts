@@ -4,6 +4,14 @@ import type { VoiceRequest } from "./casting";
 // Overridable so tests can point at a mock.
 const ENDPOINT = process.env.SARVAM_TTS_URL ?? "https://api.sarvam.ai/text-to-speech";
 
+/**
+ * Whether the site may synthesise missing audio on request. Off by default:
+ * each request spends Sarvam credits, and the free ₹100 is one-time.
+ */
+export function liveTtsEnabled(): boolean {
+  return process.env.ENABLE_LIVE_TTS === "1";
+}
+
 /** Synthesis can't happen at all right now: no API key, or no credits left. */
 export class AudioUnavailableError extends Error {}
 
